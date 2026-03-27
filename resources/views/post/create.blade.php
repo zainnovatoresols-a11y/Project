@@ -10,24 +10,31 @@
             <a class="btn btn-primary btn-sm" href="{{ route('post.index') }}"><i class="fa fa-arrow-left"></i> Back</a>
         </div>
 
-        <form action="{{ route('post.store') }}" method="POST">
+        <form id="postForm" action="{{ route('post.store') }}" method="POST">
             @csrf
 
+            <div id="clientErrors"></div>
+
             <div class="mb-3">
+
                 <label for="inputName" class="form-label"><strong>Name:</strong></label>
+                @error('name')
+                <div class="form-text text-danger">{{ $message }}</div>
+                @enderror
                 <input
                     type="text"
                     name="name"
                     class="form-control @error('name') is-invalid @enderror"
                     id="inputName"
                     placeholder="Name">
-                @error('name')
-                <div class="form-text text-danger">{{ $message }}</div>
-                @enderror
+
             </div>
 
             <div class="mb-3">
-                <label for="inputDetail" class="form-label"><strong>Detail:</strong></label>
+                <label for="inputDetail" class="form-label"><strong>Description:</strong></label>
+                @error('description')
+                <div class="form-text text-danger">{{ $message }}</div>
+                @enderror
                 <textarea
                     class="form-control @error('detail') is-invalid @enderror"
                     style="height:150px"
@@ -43,4 +50,49 @@
 
     </div>
 </div>
+
+<script>
+    const form = document.getElementById('postForm');
+    const errorBox = document.getElementById('clientErrors');
+
+    const nameInput = document.getElementById('inputName');
+    const descriptionInput = document.getElementById('inputDetail');
+
+    function validate() {
+        let errors = [];
+
+        let name = nameInput.value.trim();
+        let description = descriptionInput.value.trim();
+
+        if (name === '') {
+            errors.push("Name is required.");
+        } else if (name.length > 255) {
+            errors.push("Name cannot exceed 255 characters.");
+        }
+
+        if (description === '') {
+            errors.push("Description is required.");
+        } else if (description.length < 10) {
+            errors.push("Description must be at least 10 characters.");
+        }
+
+        errorBox.innerHTML = '';
+        errors.forEach(err => {
+            errorBox.innerHTML += `<div class="text-danger">${err}</div>`;
+        });
+
+        return errors.length === 0;
+    }
+
+    nameInput.addEventListener('input', validate);
+    descriptionInput.addEventListener('input', validate);
+
+    form.addEventListener('submit', function(e) {
+        if (!validate()) {
+            e.preventDefault();
+        }
+    });
+</script>
+
+
 @endsection

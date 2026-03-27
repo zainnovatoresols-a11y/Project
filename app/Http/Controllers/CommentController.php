@@ -34,8 +34,7 @@ class CommentController extends Controller
     {
         $comments = $post->comments()
             ->with('user')
-            ->latest()
-            ->paginate(5);
+            ->latest();
 
         return view('post.show', compact('post', 'comments'));
     }

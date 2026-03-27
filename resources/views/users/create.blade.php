@@ -97,23 +97,26 @@
     <div class="registration-card">
         <h3>Create Account</h3>
 
-        <form action="{{ route('users.store') }}" method="POST">
+        <form id="registerForm" action="{{ route('users.store') }}" method="POST">
             @csrf
-
+            <div id="clientErrors"></div>
             <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Full Name">
             @error('name')
             <div class="text-danger">{{ $message }}</div>
             @enderror
+
 
             <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email Address">
             @error('email')
             <div class="text-danger">{{ $message }}</div>
             @enderror
 
+
             <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password">
             @error('password')
             <div class="text-danger">{{ $message }}</div>
             @enderror
+
 
             <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm Password">
 
@@ -128,4 +131,68 @@
         </div>
     </div>
 </div>
+<script>
+    const form = document.getElementById('registerForm');
+    const errorBox = document.getElementById('clientErrors');
+
+    const nameInput = document.querySelector('[name="name"]');
+    const emailInput = document.querySelector('[name="email"]');
+    const passwordInput = document.querySelector('[name="password"]');
+    const confirmInput = document.querySelector('[name="password_confirmation"]');
+
+    function validate() {
+        let errors = [];
+
+        let name = nameInput.value.trim();
+        let email = emailInput.value.trim();
+        let password = passwordInput.value;
+        let confirmPassword = confirmInput.value;
+
+        if (name === '') {
+            errors.push("Full name is required.");
+        } else if (name.length > 255) {
+            errors.push("Name cannot exceed 255 characters.");
+        }
+
+        let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (email === '') {
+            errors.push("Email is required.");
+        } else if (!emailPattern.test(email)) {
+            errors.push("Enter a valid email address.");
+        }
+
+        if (password.length < 8) {
+            errors.push("Password must be at least 8 characters.");
+        } else {
+            if (!/[A-Z]/.test(password)) {
+                errors.push("Password must contain uppercase.");
+            }
+            if (!/[a-z]/.test(password)) {
+                errors.push("Password must contain lowercase.");
+            }
+        }
+
+        if (password !== confirmPassword) {
+            errors.push("Passwords do not match.");
+        }
+
+        errorBox.innerHTML = '';
+        errors.forEach(err => {
+            errorBox.innerHTML += `<div class="text-danger">${err}</div>`;
+        });
+
+        return errors.length === 0;
+    }
+
+    nameInput.addEventListener('input', validate);
+    emailInput.addEventListener('input', validate);
+    passwordInput.addEventListener('input', validate);
+    confirmInput.addEventListener('input', validate);
+
+    form.addEventListener('submit', function(e) {
+        if (!validate()) {
+            e.preventDefault();
+        }
+    });
+</script>
 @endsection

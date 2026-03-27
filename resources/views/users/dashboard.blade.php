@@ -55,7 +55,7 @@
             <div class="space-y-4">
                 {{-- Main Action Button --}}
                 <a href="{{ route('post.index') }}" class="group relative inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 bg-black text-white text-base font-semibold rounded-lg shadow-lg hover:bg-gray-800 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    <span>View My Posts</span>
+                    <span>View Posts</span>
                 </a>
                 <div class="pt-8 border-t border-gray-200 mt-6">
                     <form method="POST" action="{{ route('logout') }}">

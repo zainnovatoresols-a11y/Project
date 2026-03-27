@@ -23,8 +23,19 @@ class PostStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'description' => 'required',
+            'name' => 'required|string|max:255|unique:post,name',
+            'description' => 'required|string|min:10|max:1000',
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'name.required' => 'Name is required.',
+            'name.unique' => 'This name already exists.',
+            'name.max' => 'Name is too long.',
+
+            'description.required' => 'Description is required.',
+            'description.min' => 'Description must be at least 10 characters.',
         ];
     }
 }
