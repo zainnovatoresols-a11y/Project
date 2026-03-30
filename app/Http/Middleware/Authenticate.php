@@ -17,19 +17,19 @@ class Authenticate
     {
         return $next($request);
     }
-    protected function authenticate($request, array $guards)
-{
-    if (empty($guards)) {
-        $guards = ['admin', 'user', 'web'];
-    }
+//     protected function authenticate($request, array $guards)
+// {
+//     if (empty($guards)) {
+//         $guards = ['admin', 'user', 'web'];
+//     }
 
-    foreach ($guards as $guard) {
-        if (Auth::guard($guard)->check()) {
-            Auth::shouldUse($guard);
-            return;
-        }
-    }
+//     foreach ($guards as $guard) {
+//         if (Auth::guard($guard)->check()) {
+//             Auth::shouldUse($guard);
+//             return;
+//         }
+//     }
 
-    $this->unauthenticated($request, $guards);
-}
+//     $this->unauthenticated($request, $guards);
+// }
 }

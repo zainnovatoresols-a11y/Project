@@ -36,7 +36,7 @@
                     name="description"
                     id="inputDetail"
                     placeholder="Detail">{{ $post->description }}</textarea>
-                @error('detail')
+                @error('description')
                 <div class="form-text text-danger">{{ $message }}</div>
                 @enderror
             </div>
