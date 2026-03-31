@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
+
+
+use App\Services\UserService;
 
 class AuthController extends Controller
 {
@@ -16,43 +18,60 @@ class AuthController extends Controller
     public function login(Request $request)
     {
 
-        $request->validate([
-            'email'    => ['required', 'email:rfc', 'max:255'],
-            'password' => ['required', 'string', 'min:8', 'max:72'],
-        ]);
+        // $request->validate([
+        //     'email'    => ['required', 'email:rfc', 'max:255'],
+        //     'password' => ['required', 'string', 'min:8', 'max:72'],
+        // ]);
 
         //login attempts only 5
-        RateLimiter::tooManyAttempts('login:' . $request->ip(), 5)
-            ? abort(429, 'Too many login attempts. Please try again later.')
-            : null;
+        // RateLimiter::tooManyAttempts('login:' . $request->ip(), 5)
+        //     ? abort(429, 'Too many login attempts. Please try again later.')
+        //     : null;
 
+        // $credentials = $request->only('email', 'password');
 
-        $credentials = $request->only('email', 'password');
+        // if (Auth::guard('web')->attempt($credentials)) {
 
-        if (Auth::guard('web')->attempt($credentials)) {
+        //     $user = Auth::guard('web')->user();
 
-            $user = Auth::guard('web')->user();
-
-            Auth::guard('web')->logout();
+        //     Auth::guard('web')->logout();
 
             //use guard according to login user(admin or user);
-            if ($user->role === 'admin') {
+        //     if ($user->role === 'admin') {
 
-                Auth::guard('admin')->login($user);
-                Auth::shouldUse('admin');
+        //         Auth::guard('admin')->login($user);
+        //         Auth::shouldUse('admin');
 
-                return redirect()->route('admin.dashboard');
-            } else {
+        //         return redirect()->route('admin.dashboard');
+        //     } else {
 
-                Auth::guard('user')->login($user);
-                Auth::shouldUse('user');
+        //         Auth::guard('user')->login($user);
+        //         Auth::shouldUse('user');
 
-                return redirect()->route('user.dashboard');
-            }
-        }
+        //         return redirect()->route('user.dashboard');
+        //     }
+        // }
 
         //apply time after login atempt exceed
-        RateLimiter::hit('login:' . $request->ip(), 60);
+        // RateLimiter::hit('login:' . $request->ip(), 60);
+
+        // return back()->withErrors(['email' => 'Invalid credentials']);
+
+        $request->validate([
+            'email'    => ['required', 'email:rfc', 'max:255'],
+            'password' => ['required', 'string', 'max:72'],
+        ]);
+
+        $credentials = $request->only('email', 'password');
+        $ip = $request->ip();
+        // dd($ip);
+
+        $result = app(UserService::class)
+        ->loginUser($credentials, $ip);
+
+        if ($result['success']) {
+            return redirect($result['redirect']);
+        }
 
         return back()->withErrors(['email' => 'Invalid credentials']);
     }

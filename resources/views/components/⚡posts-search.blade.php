@@ -53,7 +53,7 @@ new class extends Component {
             <tr>
                 <th width="80px">No</th>
                 <th>Name</th>
-                <th>User</th>
+                <th>Created By</th>
                 <th>Details</th>
                 <th width="250px">Action</th>
             </tr>

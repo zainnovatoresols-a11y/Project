@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ImageController;
-use App\Livewire\ProductSearch;
+// use App\Livewire\ProductSearch;
+
 
 Route::get('/', function () {
     // dd(app());
@@ -20,8 +21,11 @@ Route::get('/login', function () {
     return view('login');
 })->name('login');
 
+
 Route::resource('products', ProductController::class);
 Route::get('posts', [PostController::class, 'index']);
+
+
 Route::middleware(['auth:user,admin'])->group(function () {
     Route::resource('post', PostController::class);
 });
@@ -39,6 +43,8 @@ Route::resource('crud', CRUDController::class);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+
+
 Route::middleware('auth:user')->group(function () {
     Route::get('/user-dashboard', function () {
         return view('users.dashboard');
@@ -48,6 +54,7 @@ Route::middleware('auth:user')->group(function () {
         return view('image');
     })->name('Add-Image');
 });
+
 
 Route::middleware('auth:admin')->group(function () {
     Route::get('/admin-dashboard', function () {

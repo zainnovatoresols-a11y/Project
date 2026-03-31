@@ -97,15 +97,23 @@
     <div class="login-card">
         <h3>Login</h3>
 
-        <form method="POST" action="/login">
+        <form id="loginForm" method="POST" action="/login">
             @csrf
 
-            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email Address">
+            <input type="email" id="email" name="email"
+                class="form-control @error('email') is-invalid @enderror"
+                placeholder="Email Address">
+            <div id="emailError" class="text-danger"></div>
+
             @error('email')
             <div class="text-danger">{{ $message }}</div>
             @enderror
 
-            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password">
+            <input type="password" id="password" name="password"
+                class="form-control @error('password') is-invalid @enderror"
+                placeholder="Password">
+            <div id="passwordError" class="text-danger"></div>
+
             @error('password')
             <div class="text-danger">{{ $message }}</div>
             @enderror
@@ -121,4 +129,68 @@
         </div>
     </div>
 </div>
+
+<script>
+    const form = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+
+    let emailTimer;
+    let passwordTimer;
+
+    function validateEmail() {
+        let email = emailInput.value.trim();
+        emailError.innerText = '';
+
+        if (!email) {
+            emailError.innerText = 'Email is required';
+            return false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            emailError.innerText = 'Invalid email format';
+            return false;
+        } else if (email.length > 255) {
+            emailError.innerText = 'Email must not exceed 255 characters';
+            return false;
+        }
+
+        return true;
+    }
+
+    function validatePassword() {
+        let password = passwordInput.value.trim();
+        passwordError.innerText = '';
+
+        if (!password) {
+            passwordError.innerText = 'Password is required';
+            return false;
+        } else if (password.length > 72) {
+            passwordError.innerText = 'Password must not exceed 72 characters';
+            return false;
+        }
+
+        return true;
+    }
+
+    emailInput.addEventListener('input', function() {
+        clearTimeout(emailTimer);
+        emailTimer = setTimeout(validateEmail, 300);
+    });
+
+    passwordInput.addEventListener('input', function() {
+        clearTimeout(passwordTimer);
+        passwordTimer = setTimeout(validatePassword, 300);
+    });
+
+    form.addEventListener('submit', function(e) {
+        let isEmailValid = validateEmail();
+        let isPasswordValid = validatePassword();
+
+        if (!isEmailValid || !isPasswordValid) {
+            e.preventDefault();
+        }
+    });
+</script>
 @endsection

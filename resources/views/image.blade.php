@@ -44,6 +44,9 @@
                 class="space-y-6 bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
                 @csrf
                 <div class="text-left">
+                    @error('image')
+                    <div class="text-danger">{{ $message }}</div>
+                    @enderror
                     <label class="block text-sm font-medium text-gray-600 mb-2">
                         Choose Image
                     </label>
