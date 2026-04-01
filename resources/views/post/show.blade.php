@@ -6,9 +6,10 @@
     <div class="card mb-4 shadow-sm">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h2 class="mb-0">Show Product</h2>
-            <a class="btn btn-primary btn-sm" href="{{ route('post.index') }}">
+            <a class="btn btn-primary btn-sm" href="{{ url()->previous()}}">
                 <i class="fa fa-arrow-left"></i> Back
             </a>
+
         </div>
         <div class="card-body">
             <div class="mb-3">

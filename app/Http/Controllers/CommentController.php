@@ -7,27 +7,23 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Comment;
 use Illuminate\Support\Facades\Auth;
+use App\Services\CommentService;
 
 class CommentController extends Controller
 {
-    public function store(Request $request, Post $post)
+    public function store(Request $request, Post $post, CommentService $commentService)
     {
         $request->validate([
             'comment' => 'required'
         ]);
 
-        $user = Auth::guard('admin')->user() ?? Auth::guard('user')->user();
+        $response = $commentService->storeComment($post, $request->comment);
 
-        if (!$user) {
-            return back()->with('error', 'Login required');
+        if (!$response['status']) {
+            return back()->with('error', $response['message']);
         }
 
-        $post->comments()->create([
-            'user_id' => $user->id,
-            'comment' => $request->comment
-        ]);
-
-        return back()->with('success', 'Comment added');
+        return back()->with('success', $response['message']);
     }
 
     public function show(Post $post)

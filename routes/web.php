@@ -23,7 +23,7 @@ Route::get('/login', function () {
 
 
 Route::resource('products', ProductController::class);
-Route::get('posts', [PostController::class, 'index']);
+// Route::get('posts', [PostController::class, 'index']);
 
 
 Route::middleware(['auth:user,admin'])->group(function () {
@@ -31,18 +31,16 @@ Route::middleware(['auth:user,admin'])->group(function () {
 });
 
 
-
 Route::resource('users', UserController::class);
-Route::get('register', [UserController::class, 'create'])->name('users.create');
-Route::get('/users', [UserController::class, 'index'])->name('users.index');
+// Route::get('register', [UserController::class, 'create'])->name('users.create');
+// Route::get('/users', [UserController::class, 'index'])->name('users.index');
+
 
 Route::resource('crud', CRUDController::class);
 
 
-
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
 
 
 Route::middleware('auth:user')->group(function () {
@@ -61,7 +59,6 @@ Route::middleware('auth:admin')->group(function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
 });
-
 
 
 

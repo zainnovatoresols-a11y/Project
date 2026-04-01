@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use App\Services\PostService;
+
 
 class PostController extends Controller
 {
@@ -29,13 +31,11 @@ class PostController extends Controller
         return view('post.create');
     }
 
-    public function store(PostStoreRequest $request): RedirectResponse
+    public function store(PostStoreRequest $request, PostService $postService): RedirectResponse
     {
         $validated = $request->validated();
 
-        
-        $validated['user_id'] = Auth::id();
-        $post = Post::create($validated);
+        $postService->store($validated);
 
         return redirect()->route('post.index')
             ->with('success', 'Post created successfully.');
@@ -59,18 +59,12 @@ class PostController extends Controller
         return view('post.edit', compact('post'));
     }
 
-    public function update(PostUpdateRequest $request, Post $post): RedirectResponse
+    public function update(PostUpdateRequest $request, Post $post, PostService $postService): RedirectResponse
     {
         $this->authorize('post.edit', $post);
+
         $validated = $request->validated();
-
-        if (Auth::guard('admin')->check()) {
-            $validated['user_id'] = Auth::guard('admin')->id();
-        } elseif (Auth::guard('user')->check()) {
-            $validated['user_id'] = Auth::guard('user')->id();
-        }
-
-        $post->update($validated);
+        $postService->update($validated, $post);
 
         return redirect()->route('post.index')
             ->with('success', 'Post updated successfully');
