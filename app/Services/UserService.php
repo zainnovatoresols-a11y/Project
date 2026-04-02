@@ -7,25 +7,35 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Repositories\UserRepositoryInterface;
 
 class UserService
 {
     /**
      * Create a new class instance.
      */
-    public function __construct()
+    protected $userRepository;
+
+    public function __construct(UserRepositoryInterface $userRepository)
     {
-        //
-    }
-    public function createUser(array $data)
-    {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        $this->userRepository = $userRepository;
     }
 
+
+    public function getAllUsers()
+    {
+        return $this->userRepository->getAll();
+    }
+
+
+    public function createUser(array $data)
+    {
+        $data['password'] = Hash::make($data['password']);
+
+        return $this->userRepository->create($data);
+    }
+
+    
     public function loginUser(array $credentials, string $ip)
     {
         //login attempts only 5

@@ -10,21 +10,30 @@ use App\Services\UserService;
 
 class UserController extends Controller
 {
+    protected $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function index()
     {
-        $users = User::all();
+        $users = $this->userService->getAllUsers();
         return view('users.index', compact('users'));
     }
-    function create()
+
+    public function create()
     {
         return view('users.create');
     }
 
-    public function store(StoreUserRequest $request, UserService $userService)
+    public function store(StoreUserRequest $request)
     {
         $validated = $request->validated();
-        $userService->createUser($validated);
+        $this->userService->createUser($validated);
 
-        return redirect()->route('login')->with('success', 'User added successfully!');
+        return redirect()->route('login')
+            ->with('success', 'User added successfully!');
     }
 }
