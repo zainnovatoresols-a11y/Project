@@ -90,11 +90,48 @@
         .login-card .btn-login {
             padding: 0.5rem 1rem;
         }
+
+
+        /* Flash Messages */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            font-weight: 500;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        /* Success */
+        .alert-success {
+            background-color: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        /* Error */
+        .alert-error {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
     }
 </style>
 
 <div class="login-container">
+
     <div class="login-card">
+        @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+        @endif
+
+        @if(session('error'))
+        <div class="alert alert-error">
+            {{ session('error') }}
+        </div>
+        @endif
         <h3>Login</h3>
 
         <form id="loginForm" method="POST" action="/login">

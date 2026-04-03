@@ -17,13 +17,15 @@ use App\Services\PostService;
 class PostController extends Controller
 {
     use AuthorizesRequests;   
-    public function index()
+    public function index(PostService $postService)
     {
         // $posts = Post::with('user')->latest()->paginate(2);
         // $posts = Post::latest()->paginate(2);
         // $posts->load('user');
         // dd($posts);
-        return view('post.index');
+
+        $posts = $postService->getAllPosts();
+        return view('post.index', compact('posts'));
     }
 
     public function create(): View
@@ -31,26 +33,20 @@ class PostController extends Controller
         return view('post.create');
     }
 
-    public function store(PostStoreRequest $request, PostService $postService): RedirectResponse
+    public function store(PostStoreRequest $request, PostService $postService)
     {
-        $validated = $request->validated();
-
-        $postService->store($validated);
+        $postService->store($request->validated());
 
         return redirect()->route('post.index')
             ->with('success', 'Post created successfully.');
     }
 
 
-    public function show(Post $post): View
-
+    public function show(Post $post, PostService $postService)
     {
-        $comments = $post->comments()
-            ->with('user')
-            ->latest()
-            ->paginate(5);
+        $data = $postService->show($post);
 
-        return view('post.show', compact('post', 'comments'));
+        return view('post.show', $data);
     }
 
     public function edit(Post $post): View
@@ -59,21 +55,21 @@ class PostController extends Controller
         return view('post.edit', compact('post'));
     }
 
-    public function update(PostUpdateRequest $request, Post $post, PostService $postService): RedirectResponse
+    public function update(PostUpdateRequest $request, Post $post, PostService $postService)
     {
         $this->authorize('post.edit', $post);
 
-        $validated = $request->validated();
-        $postService->update($validated, $post);
+        $postService->update($request->validated(), $post);
 
         return redirect()->route('post.index')
             ->with('success', 'Post updated successfully');
     }
 
-    public function destroy(Post $post): RedirectResponse
+    public function destroy(Post $post, PostService $postService)
     {
         $this->authorize('post.delete', $post);
-        $post->delete();
+
+        $postService->delete($post);
 
         return redirect()->route('post.index')
             ->with('success', 'Post deleted successfully');

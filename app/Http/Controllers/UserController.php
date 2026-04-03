@@ -34,6 +34,6 @@ class UserController extends Controller
         $this->userService->createUser($validated);
 
         return redirect()->route('login')
-            ->with('success', 'User added successfully!');
+            ->with('success', 'User registered successfully! Please log in with your credentials.');
     }
 }

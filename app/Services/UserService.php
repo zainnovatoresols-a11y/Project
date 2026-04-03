@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Repositories\UserRepositoryInterface;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 
 class UserService
 {

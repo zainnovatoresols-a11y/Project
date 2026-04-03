@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ImageController;
-// use App\Livewire\ProductSearch;
-
 
 Route::get('/', function () {
     // dd(app());
@@ -23,21 +21,14 @@ Route::get('/login', function () {
 
 
 Route::resource('products', ProductController::class);
-// Route::get('posts', [PostController::class, 'index']);
-
 
 Route::middleware(['auth:user,admin'])->group(function () {
     Route::resource('post', PostController::class);
 });
 
-
 Route::resource('users', UserController::class);
-// Route::get('register', [UserController::class, 'create'])->name('users.create');
-// Route::get('/users', [UserController::class, 'index'])->name('users.index');
-
 
 Route::resource('crud', CRUDController::class);
-
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
